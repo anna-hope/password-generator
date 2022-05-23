@@ -1,6 +1,6 @@
 ## password generator
 
-A CLI passphrase generator that uses the Diceware™ wordlist, written in Rust.
+A CLI passphrase generator that uses the [Diceware™](https://theworld.com/~reinhold/diceware.html) wordlist, written in Rust.
 
 Sample output:
 ```
