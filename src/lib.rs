@@ -53,7 +53,7 @@ fn download_diceware_wordlist(wordlist_path: &str) -> Result<u64, &'static str> 
     }
 }
 
-pub fn get_wordlist_data() -> String {
+fn get_wordlist_data() -> String {
     let data_dir = get_data_dir();
     create_wordlist_parent_path(&data_dir).expect("Could not create the parent directory");
 
@@ -77,7 +77,7 @@ fn parse_wordlist_line(line: &str) -> Option<(&str, &str)> {
     }
 }
 
-pub fn parse_diceware_wordlist(wordlist_data: String) -> HashMap<String, String> {
+fn parse_diceware_wordlist(wordlist_data: String) -> HashMap<String, String> {
     let mut dice_rolls2word = HashMap::new();
     for line in wordlist_data.lines() {
         if let Some((rolls, word)) = parse_wordlist_line(line) {
@@ -87,7 +87,7 @@ pub fn parse_diceware_wordlist(wordlist_data: String) -> HashMap<String, String>
     dice_rolls2word
 }
 
-pub fn generate_dice_rolls() -> String {
+fn generate_dice_rolls() -> String {
     let mut rng = StdRng::from_entropy();
     // we need 5 dice rolls
     let mut dice_rolls: Vec<u8> = vec![0; 5];
@@ -96,5 +96,18 @@ pub fn generate_dice_rolls() -> String {
         dice_rolls[i] = dice_roll;
     }
     dice_rolls.into_iter().map(|x| x.to_string()).collect::<Vec<String>>().concat()
+}
 
+pub fn generate_passphrase() -> String {
+    let wordlist_contents = get_wordlist_data();
+    let roll2word = parse_diceware_wordlist(wordlist_contents);
+    let mut tokens = Vec::with_capacity(5);
+
+    for _ in 0..5 {
+        let some_dice_roll = generate_dice_rolls();
+        let word = roll2word.get(&some_dice_roll).unwrap().to_owned();
+        tokens.push(word);
+    }
+
+    tokens.join("-")
 }
