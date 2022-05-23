@@ -1,4 +1,5 @@
 use directories::ProjectDirs;
+use rand::prelude::*;
 use regex::Regex;
 use std::collections::HashMap;
 use std::fs;
@@ -84,4 +85,16 @@ pub fn parse_diceware_wordlist(wordlist_data: String) -> HashMap<String, String>
         }
     }
     dice_rolls2word
+}
+
+pub fn generate_dice_rolls() -> String {
+    let mut rng = StdRng::from_entropy();
+    // we need 5 dice rolls
+    let mut dice_rolls: Vec<u8> = vec![0; 5];
+    for i in 0..5 {
+        let dice_roll = rng.gen_range(1..=6);
+        dice_rolls[i] = dice_roll;
+    }
+    dice_rolls.into_iter().map(|x| x.to_string()).collect::<Vec<String>>().concat()
+
 }
