@@ -135,11 +135,11 @@ pub fn generate_passphrase(
 
     if add_special_characters {
         let mut rng = StdRng::from_entropy();
-        for i in 0..3 {
+        for _ in 0..3 {
             let special_char_index = rng.gen_range(0..SPECIAL_CHARACTERS.len());
             let special_char = SPECIAL_CHARACTERS[special_char_index].to_string();
 
-            let random_index = rng.gen_range(0..tokens.len()) + i;
+            let random_index = rng.gen_range(0..tokens.len());
             tokens.insert(random_index, special_char);
         }
     }
