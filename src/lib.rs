@@ -12,6 +12,13 @@ extern crate lazy_static;
 
 const DICEWARE_URL: &str = "https://theworld.com/~reinhold/diceware.wordlist.asc";
 const WORDLIST_FILENAME: &str = "wordlist";
+const SPECIAL_CHARACTERS: &[&str] = &["!", "\"", "#", "$", "%", "&", "\'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"];
+
+#[derive(clap::ValueEnum, Clone)]
+pub enum SeparatorKind {
+    Digit,
+    Hyphen,
+}
 
 fn get_data_dir() -> path::PathBuf {
     let project_dirs = ProjectDirs::from("me", "annahope", "password_generator").unwrap();
@@ -95,19 +102,57 @@ fn generate_dice_rolls() -> String {
         let dice_roll = rng.gen_range(1..=6);
         dice_rolls[i] = dice_roll;
     }
-    dice_rolls.into_iter().map(|x| x.to_string()).collect::<Vec<String>>().concat()
+    dice_rolls
+        .into_iter()
+        .map(|x| x.to_string())
+        .collect::<Vec<String>>()
+        .concat()
 }
 
-pub fn generate_passphrase() -> String {
+pub fn generate_passphrase(
+    separator_kind: SeparatorKind,
+    capitalize: bool,
+    add_special_characters: bool,
+) -> String {
     let wordlist_contents = get_wordlist_data();
     let roll2word = parse_diceware_wordlist(wordlist_contents);
     let mut tokens = Vec::with_capacity(5);
 
     for _ in 0..5 {
         let some_dice_roll = generate_dice_rolls();
-        let word = roll2word.get(&some_dice_roll).unwrap().to_owned();
+        let mut word = roll2word.get(&some_dice_roll).unwrap().to_owned();
+        if capitalize {
+            let mut chars = word.chars().collect::<Vec<_>>();
+            chars[0] = chars[0].to_ascii_uppercase();
+            word = chars
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<_>>()
+                .join("");
+        }
         tokens.push(word);
     }
 
-    tokens.join("-")
+    if add_special_characters {
+        let mut rng = StdRng::from_entropy();
+        for i in 0..3 {
+            let special_char_index = rng.gen_range(0..SPECIAL_CHARACTERS.len());
+            let special_char = SPECIAL_CHARACTERS[special_char_index].to_string();
+
+            let random_index = rng.gen_range(0..tokens.len()) + i;
+            tokens.insert(random_index, special_char);
+        }
+    }
+
+    match separator_kind {
+        SeparatorKind::Digit => {
+            let mut rng = StdRng::from_entropy();
+            for i in 0..tokens.len() - 1 {
+                let digit = rng.gen_range(0..9);
+                tokens.insert(i + i + 1, digit.to_string());
+            }
+            tokens.join("")
+        }
+        SeparatorKind::Hyphen => tokens.join("-"),
+    }
 }
