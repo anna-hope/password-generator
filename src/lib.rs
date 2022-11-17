@@ -12,7 +12,10 @@ extern crate lazy_static;
 
 const DICEWARE_URL: &str = "https://theworld.com/~reinhold/diceware.wordlist.asc";
 const WORDLIST_FILENAME: &str = "wordlist";
-const SPECIAL_CHARACTERS: &[&str] = &["!", "\"", "#", "$", "%", "&", "\'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"];
+const SPECIAL_CHARACTERS: &[&str] = &[
+    "!", "\"", "#", "$", "%", "&", "\'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<",
+    "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~",
+];
 
 #[derive(clap::ValueEnum, Clone)]
 pub enum SeparatorKind {
