@@ -32,7 +32,7 @@ like this (assuming you've installed the program as described above):
 
 `password_generator -s digit -a -c`
 
-However, the resulting password will likely be much harder to remember.
+However, the resulting password will likely be much harder to remember, for example `Mv7Town1Ohmic6Sis0'1Kt3^3"6Spurn`.
 
 You can see all the available options, and toggle them individually by running
 
