@@ -36,7 +36,7 @@ fn create_wordlist_parent_path(data_dir: &path::PathBuf) -> io::Result<()> {
     Ok(())
 }
 
-fn get_wordlist_data_path(data_dir: &path::PathBuf) -> String {
+fn get_wordlist_data_path(data_dir: &path::Path) -> String {
     let data_dir_str = data_dir.to_str().unwrap();
     format_args!(
         "{data_dir}{sep}{filename}",
@@ -54,12 +54,12 @@ fn download_diceware_wordlist(wordlist_path: &str) -> Result<u64, &'static str> 
     let body = resp
         .text()
         .expect("The body of the downloaded file is invalid");
-    let mut out = File::create(&wordlist_path).expect("Failed to create file");
+    let mut out = File::create(wordlist_path).expect("Failed to create file");
 
     if let Ok(bytes_written) = io::copy(&mut body.as_bytes(), &mut out) {
-        return Ok(bytes_written);
+        Ok(bytes_written)
     } else {
-        return Err("could not download the wordlist");
+        Err("could not download the wordlist")
     }
 }
 
@@ -101,9 +101,8 @@ fn generate_dice_rolls() -> String {
     let mut rng = StdRng::from_entropy();
     // we need 5 dice rolls
     let mut dice_rolls: Vec<u8> = vec![0; 5];
-    for i in 0..5 {
-        let dice_roll = rng.gen_range(1..=6);
-        dice_rolls[i] = dice_roll;
+    for dice_roll in dice_rolls.iter_mut().take(5) {
+        *dice_roll = rng.gen_range(1..=6);
     }
     dice_rolls
         .into_iter()
