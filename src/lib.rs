@@ -119,7 +119,7 @@ pub fn generate_passphrase(
     let roll2word = parse_diceware_wordlist(wordlist_contents);
     let mut tokens = Vec::with_capacity(5);
 
-    for _ in 0..5 {
+    for _ in 0..6 {
         let some_dice_roll = generate_dice_rolls();
         let mut word = roll2word.get(&some_dice_roll).unwrap().to_owned();
         if capitalize {
