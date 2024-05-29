@@ -1,14 +1,13 @@
 use directories::ProjectDirs;
+use lazy_static::lazy_static;
 use rand::prelude::*;
 use regex::Regex;
+
 use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::io;
 use std::path;
-
-#[macro_use]
-extern crate lazy_static;
 
 const DICEWARE_URL: &str = "https://theworld.com/~reinhold/diceware.wordlist.asc";
 const WORDLIST_FILENAME: &str = "wordlist";
