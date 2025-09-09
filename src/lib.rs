@@ -97,11 +97,11 @@ fn parse_diceware_wordlist(wordlist_data: String) -> HashMap<String, String> {
 }
 
 fn generate_dice_rolls() -> String {
-    let mut rng = StdRng::from_entropy();
+    let mut rng = StdRng::from_os_rng();
     // we need 5 dice rolls
     let mut dice_rolls: Vec<u8> = vec![0; 5];
     for dice_roll in dice_rolls.iter_mut().take(5) {
-        *dice_roll = rng.gen_range(1..=6);
+        *dice_roll = rng.random_range(1..=6);
     }
     dice_rolls
         .into_iter()
@@ -135,21 +135,21 @@ pub fn generate_passphrase(
     }
 
     if add_special_characters {
-        let mut rng = StdRng::from_entropy();
+        let mut rng = StdRng::from_os_rng();
         for _ in 0..3 {
-            let special_char_index = rng.gen_range(0..SPECIAL_CHARACTERS.len());
+            let special_char_index = rng.random_range(0..SPECIAL_CHARACTERS.len());
             let special_char = SPECIAL_CHARACTERS[special_char_index].to_string();
 
-            let random_index = rng.gen_range(0..tokens.len());
+            let random_index = rng.random_range(0..tokens.len());
             tokens.insert(random_index, special_char);
         }
     }
 
     match separator_kind {
         SeparatorKind::Digit => {
-            let mut rng = StdRng::from_entropy();
+            let mut rng = StdRng::from_os_rng();
             for i in 0..tokens.len() - 1 {
-                let digit = rng.gen_range(0..9);
+                let digit = rng.random_range(0..9);
                 tokens.insert(i + i + 1, digit.to_string());
             }
             tokens.join("")
